@@ -28,7 +28,7 @@ void arena_free(struct allocator* allocator) {
 struct allocator*
 allocator_create_arena_allocator(int size_of_arena) {
   struct allocator* allocator = (struct allocator*)malloc(sizeof(struct allocator) + size_of_arena);
-  
+
   allocator->alloc = arena_allocate;
   allocator->de_allocate = arena_free;
   allocator->length = size_of_arena;

@@ -1,0 +1,7 @@
+[
+  {
+    "directory": "C:/path/to/your/project",
+    "file": "src/main.c",
+    "command": "clang src/main.c -DSDL_MAIN_HANDLED -Ivendor/sdl2-compat-devel-2.32.62-VC/sdl2-compat-2.32.62/include"
+  }
+]

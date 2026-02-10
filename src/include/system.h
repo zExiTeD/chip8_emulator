@@ -2,6 +2,7 @@
 #define SYSTEM_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
 #include "./helper.h"
@@ -9,33 +10,52 @@
 #define CHIP8_SCREEN_WIDTH 64
 #define CHIP8_SCREEN_HEIGHT 32
 
-typedef uint16_t op_code;
+typedef uint16_t opcode;
 
 struct cpu {
-  uint8_t   V[16];
-  uint8_t   sp;
-  uint16_t  program_counter;
-  uint16_t  I;
+  uint8_t V[16];
+  uint8_t sp;
+  uint16_t program_counter;
+  uint16_t I;
 };
 
 struct system {
-  /* 
-0x000-0x1FF : Original interpreter ROM 
+  /*
+0x000-0x1FF : Original interpreter ROM
 0x200       : program entry point
 0xEA0-0xEFF : reserved
 0xF00-0xFFF : Display mem, Ignored
 */
-  uint8_t     memory[4096];
-  uint16_t    stack[16];
-  struct cpu  cpu;
-  uint8_t     sound_timer;
-  uint8_t     delay_timer;
-  uint8_t     display[CHIP8_SCREEN_WIDTH * CHIP8_SCREEN_HEIGHT];
+  uint8_t *memory;
+  uint16_t stack[16];
+  struct cpu cpu;
+  uint8_t sound_timer;
+  uint8_t delay_timer;
+  bool display[CHIP8_SCREEN_WIDTH * CHIP8_SCREEN_HEIGHT];
 };
 
-void system_initialize(struct system* system, struct allocator* allocator, file_t file);
-void system_execute_opcode(struct system* system);
-void system_display_draw(struct system* system);
-void system_check_collision(struct system* system);
+const unsigned char FontSet[80] = {
+    0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+    0x20, 0x60, 0x20, 0x20, 0x70, // 1
+    0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+    0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+    0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+    0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+    0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+    0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+    0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+    0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+    0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+    0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+    0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+    0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+    0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+    0xF0, 0x80, 0xF0, 0x80, 0x80  // F
+};
+
+struct system system_initialize(struct allocator *allocator, file_t file);
+void system_execute_opcode(struct system *system);
+void system_display_draw(struct system *system);
+void system_check_collision(struct system *system);
 
 #endif
