@@ -6,11 +6,14 @@
 #include <stdlib.h>
 
 #include "./helper.h"
+#include "./opcode.h"
 
 #define CHIP8_SCREEN_WIDTH 64
 #define CHIP8_SCREEN_HEIGHT 32
 
-typedef uint16_t opcode;
+#define CLOCK_SPEED 700
+#define TIMER_FREQUENCY 60
+
 
 struct cpu {
   uint8_t V[16];
@@ -31,7 +34,11 @@ struct system {
   struct cpu cpu;
   uint8_t sound_timer;
   uint8_t delay_timer;
+  bool keyboard[16];
   bool display[CHIP8_SCREEN_WIDTH * CHIP8_SCREEN_HEIGHT];
+
+  struct opcode_entry op_hashmap[16];
+
 };
 
 const unsigned char FontSet[80] = {
@@ -53,9 +60,8 @@ const unsigned char FontSet[80] = {
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
+
 struct system system_initialize(struct allocator *allocator, file_t file);
 void system_execute_opcode(struct system *system);
-void system_display_draw(struct system *system);
-void system_check_collision(struct system *system);
 
 #endif
